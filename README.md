@@ -4,9 +4,6 @@
 API REST para la gestión de pólizas (Individuales y Colectivas) y sus riesgos asociados,
 desarrollada con Spring Boot 4.1.0 y Java 17.
 
-> Nota: se utilizó la versión estable más reciente disponible de Spring Boot al momento
-> de generar el proyecto (4.1.0). La lógica y los patrones aplicados son equivalentes
-> a los de una versión 3.x.
 
 ## Estructura del proyecto
 ```
