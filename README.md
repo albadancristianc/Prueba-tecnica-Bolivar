@@ -77,20 +77,3 @@ Todos requieren el header: `x-api-key: 123456`
 4. Consola H2 disponible en `http://localhost:8080/h2-console`
    (JDBC URL: `jdbc:h2:mem:polizasdb`, usuario: `sa`, sin contraseña)
 
-## Problemas encontrados y resueltos durante el desarrollo
-Se documentan intencionalmente porque reflejan el proceso real de depuración:
-
-1. **Recursión infinita en la serialización JSON** entre `Poliza` y `Riesgo` (relación
-   bidireccional). Resuelto con `@JsonIgnore` en la referencia de vuelta (`Riesgo.poliza`).
-2. **LazyInitializationException** al serializar colecciones lazy fuera de la transacción
-   (consecuencia de `spring.jpa.open-in-view=false`, una buena práctica que se mantuvo).
-   Resuelto inicializando explícitamente las colecciones dentro de métodos `@Transactional`.
-3. **Autodestrucción de la base H2 en memoria** cuando el pool de conexiones cierra todas
-   las conexiones por inactividad. Resuelto agregando `DB_CLOSE_DELAY=-1` a la URL JDBC.
-4. **El filtro de seguridad bloqueaba la llamada interna del Adapter hacia el mock del CORE**
-   (401), porque esa llamada saliente no incluía el header `x-api-key`. Resuelto agregando
-   el header en `CoreAdapterService`.
-
-## Mejora identificada (no implementada por alcance de tiempo)
-El listado de pólizas genera el problema clásico N+1 (1 query para pólizas + 1 query por
-póliza para sus riesgos). Se resolvería con una consulta `JOIN FETCH` en el repository.
